@@ -1,0 +1,13 @@
+{
+  "products": [
+    { "sku": "CADERNO", "name": "Caderno pautado", "category": "Papelaria", "unit_price": 18.5 },
+    { "sku": "CANECA", "name": "Caneca", "category": "Casa", "unit_price": 32.0 },
+    { "sku": "CANETA", "name": "Kit de canetas", "category": "Papelaria", "unit_price": 12.0 }
+  ],
+  "orders": [
+    { "order_id": "PED-001", "sku": "CADERNO", "quantity": 2, "status": "paid" },
+    { "order_id": "PED-002", "sku": "CANECA", "quantity": 1, "status": "paid" },
+    { "order_id": "PED-003", "sku": "CANETA", "quantity": 3, "status": "pending" },
+    { "order_id": "PED-004", "sku": "CANETA", "quantity": 4, "status": "paid" }
+  ]
+}
