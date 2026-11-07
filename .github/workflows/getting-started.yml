@@ -1,0 +1,46 @@
+name: "Getting started: primeiros workflows"
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Toda segunda-feira, às 12:00 UTC.
+    - cron: "0 12 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  api-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Mostrar o trigger usando expressões
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          echo "Evento: $EVENT_NAME"
+          echo "Repositório: $REPOSITORY"
+
+      - name: Fazer uma requisição HTTP autenticada à API do GitHub
+        id: api
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          status_code="$(curl --silent --show-error --output /tmp/repo.json --write-out "%{http_code}" \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY")"
+          echo "status=$status_code" >> "$GITHUB_OUTPUT"
+          echo "A API retornou HTTP $status_code"
+
+      - name: Expressão — confirmar resposta HTTP 200
+        if: ${{ steps.api.outputs.status == '200' }}
+        run: echo "A consulta autenticada funcionou."
+
+      - name: Falhar se a API retornar erro
+        if: ${{ steps.api.outputs.status != '200' }}
+        run: exit 1
